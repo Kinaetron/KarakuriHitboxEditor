@@ -1,0 +1,29 @@
+{
+  "name": "karakurihitboxeditor",
+  "version": "1.0.0",
+  "description": "Hitbox Editor for 2D Animation",
+  "main": "main.js",
+  "scripts": 
+  {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kinaetron/KarakuriHitboxEditor.git"
+  },
+  "keywords": [
+    "Hitbox",
+    "Hurtbox",
+    "Editor"
+  ],
+  "author": "Kinaetron",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kinaetron/KarakuriHitboxEditor/issues"
+  },
+  "homepage": "https://github.com/Kinaetron/KarakuriHitboxEditor#readme",
+  "devDependencies": {
+    "electron": "^28.2.3"
+  }
+}
