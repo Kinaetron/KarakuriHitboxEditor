@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Hitbox Editor for 2D Animation",
   "main": "main.js",
-  "scripts": 
-  {
+  "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,5 +24,9 @@
   "homepage": "https://github.com/Kinaetron/KarakuriHitboxEditor#readme",
   "devDependencies": {
     "electron": "^28.2.3"
+  },
+  "dependencies": {
+    "ase-parser": "0.0.18",
+    "sharp": "^0.33.2"
   }
 }
