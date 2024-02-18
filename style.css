@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Set the body height to 100% of the viewport height */
+    display: flex;
+    flex-direction: column;
+}
+#top, #button {
+    height: 5%;
+    background-color: #3498db;
+}
+#middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2ecc71;
+}
+
+img {
+    max-width: 100%; /* Ensure the image does not exceed the width of the container */
+    max-height: 100%; /* Ensure the image does not exceed the height of the container */
+}

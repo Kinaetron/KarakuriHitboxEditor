@@ -10,8 +10,7 @@ let mainWindow;
 async function makePNG(aseFile)
 {
   aseFile.parse();
-  console.log(aseFile);
-
+  
    // Create a blank png image buffer that's the same size as the Aseprite sprite (only make the promise because we'll use Promise.all a little later)
    const bgPromise = sharp({create: {
     width: aseFile.width,
