@@ -7,17 +7,18 @@ body {
 }
 #top, #button {
     height: 5%;
+    width: 100%;
     background-color: #3498db;
 }
 #middle {
+    height: 90%;
+    width: 100%;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #2ecc71;
 }
-
-img {
-    max-width: 100%; /* Ensure the image does not exceed the width of the container */
-    max-height: 100%; /* Ensure the image does not exceed the height of the container */
-}
+canvas {
+    image-rendering: pixelated;
+}  
