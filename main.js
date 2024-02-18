@@ -11,6 +11,12 @@ let frameCount;
 let frameArray = [];
 let frameIndex = 0;
 
+function FrameInformation(source, width, height) {
+  this.source = source;
+  this.width = width;
+  this.height = height;
+}
+
 function createWindow () {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -40,7 +46,6 @@ function createWindow () {
             const aseFile = new Aseprite(buffer, filename);
 
             getAnimationFrames(aseFile);
-            //makePNG(aseFile);
           }
         }
       }]
@@ -99,7 +104,9 @@ async function getAnimationFrames(aseFile)
         .toBuffer();
   
       const imageData = `data:image/png;base64,${finalBuff.toString('base64')}`;
-      frameArray.push(imageData);
+      frameInformation = new FrameInformation(imageData, aseFile.width, aseFile.height);
+      
+      frameArray.push(frameInformation);
   }
     mainWindow.webContents.send('update-frame', frameArray[0]);
 }
