@@ -23,7 +23,7 @@ window.karakuriAPI.onUpdateFrame((value) =>
     image.onload = () => 
     {
         frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height);
-
+        
         const x = (frameCanvas.width - width * currentZoom) / 2;
         const y = (frameCanvas.height - height * currentZoom) / 2;
         frameContext.drawImage(image, x, y, width * currentZoom, height * currentZoom);

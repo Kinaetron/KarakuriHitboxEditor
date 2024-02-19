@@ -11,10 +11,11 @@ let frameCount;
 let frameArray = [];
 let frameIndex = 0;
 
-function FrameInformation(source, width, height) {
-  this.source = source;
+function FrameInformation(width, height, source, frameNumber,) {
   this.width = width;
   this.height = height;
+  this.source = source;
+  this.frameNumber = frameNumber;
 }
 
 function createWindow () {
@@ -107,7 +108,7 @@ async function getAnimationFrames(aseFile)
         .toBuffer();
   
       const imageData = `data:image/png;base64,${finalBuff.toString('base64')}`;
-      frameInformation = new FrameInformation(imageData, aseFile.width, aseFile.height);
+      frameInformation = new FrameInformation(aseFile.width, aseFile.height, imageData, i);
       
       frameArray.push(frameInformation);
   }
