@@ -8,14 +8,15 @@ let width = 0;
 let height = 0;
 let sourceImage;
 
+const maxZoom = 10;
+const minZoom = 0.50;
+let currentZoom = 1;
+
 window.karakuriAPI.onUpdateFrame((value) => 
 {
     width = value.width;
     height = value.height;
     sourceImage = value.source;
-
-    console.log(containerDiv.width);
-    console.log(containerDiv.height);
 
     const image = new Image();
 
@@ -23,9 +24,9 @@ window.karakuriAPI.onUpdateFrame((value) =>
     {
         frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height);
 
-        const x = (frameCanvas.width - width) / 2;
-        const y = (frameCanvas.height - height) / 2;
-        frameContext.drawImage(image, x, y, width, height);
+        const x = (frameCanvas.width - width * currentZoom) / 2;
+        const y = (frameCanvas.height - height * currentZoom) / 2;
+        frameContext.drawImage(image, x, y, width * currentZoom, height * currentZoom);
     };
     image.src = sourceImage;
 });

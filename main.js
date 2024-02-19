@@ -19,8 +19,8 @@ function FrameInformation(source, width, height) {
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    minWidth: 1280,
-    minHeight: 720,
+    minWidth: 900,
+    minHeight: 900,
     webPreferences: 
     {
       preload: path.join(__dirname, 'preload.js')
