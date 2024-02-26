@@ -4,6 +4,11 @@ var overlay = document.getElementById("overlay");
 var ctx = canvas.getContext("2d");
 var ctxo = overlay.getContext("2d");
 
+var xTextBox = document.getElementById("x");
+var yTextBox = document.getElementById("y");
+var widthTextBox = document.getElementById("width");
+var heightTextBox = document.getElementById("height");
+
 
 
 ctx.lineWidth = 3;
@@ -109,6 +114,11 @@ function handleMouseUp(e) {
                                 rectangles[selectedRectangleIndex].height);
 
                 ctxo.strokeStyle = "blue"
+                                
+                xTextBox.value = rectangles[selectedRectangleIndex].x;
+                yTextBox.value = rectangles[selectedRectangleIndex].y;
+                widthTextBox.value = rectangles[selectedRectangleIndex].width;
+                heightTextBox.value = rectangles[selectedRectangleIndex].height;
             }
         }
     }
@@ -172,6 +182,11 @@ function IsDrawing()
     for(var j = 0; j < rectangles.length; j++) {
         ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
     }
+
+    xTextBox.value = "";
+    yTextBox.value = "";
+    widthTextBox.value = "";
+    heightTextBox.value = "";
 }
 
 function IsSelecting() {
@@ -191,6 +206,11 @@ function Delete() {
         for(var j = 0; j < rectangles.length; j++) {
             ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
         }
+
+        xTextBox.value = "";
+        yTextBox.value = "";
+        widthTextBox.value = "";
+        heightTextBox.value = "";
     }
 }
 
@@ -215,4 +235,101 @@ canvas.addEventListener("mouseout", function (e) {
 window.addEventListener("resize", function () {
     // recalculate the canvas offset when the window is resized
     calculateCanvasOffset();
+});
+
+xTextBox.addEventListener("input", function() {
+    rectangles[selectedRectangleIndex].x = xTextBox.value;
+
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    ctxo.clearRect(0, 0, overlay.width, overlay.height);
+
+    for(var j = 0; j < rectangles.length; j++) {
+        if(selectedRectangleIndex == j){
+            continue;
+        }
+        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+    }
+
+    ctxo.strokeStyle = "red";
+
+    ctxo.strokeRect(
+        rectangles[selectedRectangleIndex].x, 
+        rectangles[selectedRectangleIndex].y, 
+        rectangles[selectedRectangleIndex].width, 
+        rectangles[selectedRectangleIndex].height);
+    
+    ctxo.strokeStyle = "blue";
+});
+
+yTextBox.addEventListener("input", function() {
+    rectangles[selectedRectangleIndex].y = yTextBox.value;
+
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    ctxo.clearRect(0, 0, overlay.width, overlay.height);
+
+    for(var j = 0; j < rectangles.length; j++) {
+        if(selectedRectangleIndex == j){
+            continue;
+        }
+        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+    }
+
+    ctxo.strokeStyle = "red";
+
+    ctxo.strokeRect(
+        rectangles[selectedRectangleIndex].x, 
+        rectangles[selectedRectangleIndex].y, 
+        rectangles[selectedRectangleIndex].width, 
+        rectangles[selectedRectangleIndex].height);
+    
+    ctxo.strokeStyle = "blue";
+});
+
+widthTextBox.addEventListener("input", function() {
+    rectangles[selectedRectangleIndex].width = widthTextBox.value;
+
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    ctxo.clearRect(0, 0, overlay.width, overlay.height);
+
+    for(var j = 0; j < rectangles.length; j++) {
+
+        if(selectedRectangleIndex == j){
+            continue;
+        }
+        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+    }
+
+    ctxo.strokeStyle = "red";
+
+    ctxo.strokeRect(
+        rectangles[selectedRectangleIndex].x, 
+        rectangles[selectedRectangleIndex].y, 
+        rectangles[selectedRectangleIndex].width, 
+        rectangles[selectedRectangleIndex].height);
+    
+    ctxo.strokeStyle = "blue";
+});
+
+heightTextBox.addEventListener("input", function() {
+    rectangles[selectedRectangleIndex].height = heightTextBox.value;
+
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    ctxo.clearRect(0, 0, overlay.width, overlay.height);
+
+    for(var j = 0; j < rectangles.length; j++) {
+        if(selectedRectangleIndex == j){
+            continue;
+        }
+        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+    }
+
+    ctxo.strokeStyle = "red";
+
+    ctxo.strokeRect(
+        rectangles[selectedRectangleIndex].x, 
+        rectangles[selectedRectangleIndex].y, 
+        rectangles[selectedRectangleIndex].width, 
+        rectangles[selectedRectangleIndex].height);
+    
+    ctxo.strokeStyle = "blue";
 });
