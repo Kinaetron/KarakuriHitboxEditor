@@ -7,6 +7,7 @@ function ZoomOut()
     else {
         currentZoom = currentZoom - 0.25;
         Zoom();
+        resizeRectangles(currentZoom);
     }
 }
 
@@ -18,6 +19,7 @@ function ZoomIn()
     else {
         currentZoom = currentZoom + 0.25;
         Zoom();
+        resizeRectangles(currentZoom);
     }
 }
 
@@ -29,6 +31,7 @@ function DefaultSize()
     else {
         currentZoom = 1;
         Zoom();
+        resizeRectangles(currentZoom);
     }
 }
 

@@ -67,6 +67,36 @@ let rectangles = [];
 
 let selectedRectangleIndex = -1;
 
+function resizeRectangles(zoom) {
+
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    ctxo.clearRect(0, 0, overlay.width, overlay.height);
+
+    for(var i = 0; i < rectangles.length; i++) {
+        console.log(zoom);
+
+        const x = (canvas.width - rectangles[i].width * zoom) / 2;
+        const y = (canvas.height - rectangles[i].height * zoom) / 2;
+
+        rectangles[i] = new rectctangle(
+            x, 
+            y,
+            rectangles[i].width * zoom,
+            rectangles[i].height * zoom);
+
+            console.log(rectangles[i].x);
+            console.log(rectangles[i].y);
+            console.log(rectangles[i].width);
+            console.log(rectangles[i].height);
+
+            ctxo.strokeRect(
+                rectangles[i].x,
+                rectangles[i].y,
+                rectangles[i].width, 
+                rectangles[i].height);
+    }
+}
+
 function handleMouseDown(e) {
 
     e.preventDefault();
@@ -103,7 +133,11 @@ function handleMouseUp(e) {
                         continue;
                     }
 
-                    ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+                    ctxo.strokeRect(
+                        rectangles[j].x, 
+                        rectangles[j].y, 
+                        rectangles[j].width, 
+                        rectangles[j].height);
                 }
 
                 ctxo.strokeStyle = "red";
