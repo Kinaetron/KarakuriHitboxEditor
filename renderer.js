@@ -12,11 +12,17 @@ const maxZoom = 10;
 const minZoom = 0.50;
 let currentZoom = 1;
 
+let xPositionImage = 0;
+let yPositionImage = 0;
+
 window.karakuriAPI.onUpdateFrame((value) => 
 {
     width = value.width;
     height = value.height;
     sourceImage = value.source;
+
+    xPositionImage = (frameCanvas.width / 2) - (width / 2);
+    yPositionImage = (frameCanvas.height / 2) - (height / 2);
 
     const image = new Image();
 

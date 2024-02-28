@@ -19,10 +19,10 @@ ctxo.strokeStyle = "blue";
 
 
 function pointRectangleCollide(x, y, rectangle) {
-    const left = rectangle.x;
-    const right = left + rectangle.width;
-    const top = rectangle.y;
-    const bottom = top + rectangle.height;
+    const left = rectangle.x * currentZoom + xPositionImage;
+    const right = (left + (rectangle.width * currentZoom));
+    const top = rectangle.y * currentZoom + yPositionImage;
+    const bottom = (top + (rectangle.height * currentZoom));
 
     return x >= left &&
            x <= right &&
@@ -67,33 +67,17 @@ let rectangles = [];
 
 let selectedRectangleIndex = -1;
 
-function resizeRectangles(zoom) {
+function resizeRectangles() {
 
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
     for(var i = 0; i < rectangles.length; i++) {
-        console.log(zoom);
-
-        const x = (canvas.width - rectangles[i].width * zoom) / 2;
-        const y = (canvas.height - rectangles[i].height * zoom) / 2;
-
-        rectangles[i] = new rectctangle(
-            x, 
-            y,
-            rectangles[i].width * zoom,
-            rectangles[i].height * zoom);
-
-            console.log(rectangles[i].x);
-            console.log(rectangles[i].y);
-            console.log(rectangles[i].width);
-            console.log(rectangles[i].height);
-
             ctxo.strokeRect(
-                rectangles[i].x,
-                rectangles[i].y,
-                rectangles[i].width, 
-                rectangles[i].height);
+                rectangles[i].x * currentZoom + xPositionImage, 
+                rectangles[i].y * currentZoom + yPositionImage, 
+                rectangles[i].width * currentZoom, 
+                rectangles[i].height * currentZoom);
     }
 }
 
@@ -117,12 +101,23 @@ function handleMouseUp(e) {
     isDown = false;
 
     if(isDrawing) {
+
+        rectangles.push(
+            new rectctangle(
+                (prevStartX - xPositionImage) / currentZoom, 
+                (prevStartY - yPositionImage) / currentZoom,
+                prevWidth / currentZoom,
+                prevHeight / currentZoom));
+
         ctxo.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
-        rectangles.push(new rectctangle(prevStartX, prevStartY, prevWidth, prevHeight));
     }
     else if(isSelecting) {
-        for(var i = 0; i < rectangles.length; i++) {
-            if(pointRectangleCollide(startX, startY, rectangles[i])) {
+        for(var i = 0; i < rectangles.length; i++) 
+        {
+            if(pointRectangleCollide(
+                startX, 
+                startY, 
+                rectangles[i])) {
 
                 selectedRectangleIndex = i;
                 ctx.clearRect(0, 0, overlay.width, overlay.height);
@@ -134,25 +129,25 @@ function handleMouseUp(e) {
                     }
 
                     ctxo.strokeRect(
-                        rectangles[j].x, 
-                        rectangles[j].y, 
-                        rectangles[j].width, 
-                        rectangles[j].height);
+                        rectangles[j].x * currentZoom + xPositionImage, 
+                        rectangles[j].y * currentZoom + yPositionImage, 
+                        rectangles[j].width * currentZoom, 
+                        rectangles[j].height * currentZoom);
                 }
 
                 ctxo.strokeStyle = "red";
 
-                ctxo.strokeRect(rectangles[selectedRectangleIndex].x, 
-                                rectangles[selectedRectangleIndex].y, 
-                                rectangles[selectedRectangleIndex].width, 
-                                rectangles[selectedRectangleIndex].height);
+                ctxo.strokeRect(rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
+                                rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
+                                rectangles[selectedRectangleIndex].width * currentZoom, 
+                                rectangles[selectedRectangleIndex].height * currentZoom);
 
                 ctxo.strokeStyle = "blue"
                                 
-                xTextBox.value = rectangles[selectedRectangleIndex].x;
-                yTextBox.value = rectangles[selectedRectangleIndex].y;
-                widthTextBox.value = rectangles[selectedRectangleIndex].width;
-                heightTextBox.value = rectangles[selectedRectangleIndex].height;
+                xTextBox.value = rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage;
+                yTextBox.value = rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage;
+                widthTextBox.value = rectangles[selectedRectangleIndex].width * currentZoom;
+                heightTextBox.value = rectangles[selectedRectangleIndex].height * currentZoom;
             }
         }
     }
@@ -213,8 +208,12 @@ function IsDrawing()
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var j = 0; j < rectangles.length; j++) {
-        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+    for(var i = 0; i < rectangles.length; i++) {
+        ctxo.strokeRect(
+            rectangles[i].x * currentZoom + xPositionImage, 
+            rectangles[i].y * currentZoom + yPositionImage, 
+            rectangles[i].width * currentZoom, 
+            rectangles[i].height * currentZoom);
     }
 
     xTextBox.value = "";
@@ -237,8 +236,12 @@ function Delete() {
         ctx.clearRect(0, 0, overlay.width, overlay.height);
         ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-        for(var j = 0; j < rectangles.length; j++) {
-            ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+        for(var i = 0; i < rectangles.length; i++) {
+            ctxo.strokeRect(
+                rectangles[i].x * currentZoom + xPositionImage, 
+                rectangles[i].y * currentZoom + yPositionImage, 
+                rectangles[i].width * currentZoom,
+                rectangles[i].height * currentZoom);
         }
 
         xTextBox.value = "";
@@ -272,98 +275,114 @@ window.addEventListener("resize", function () {
 });
 
 xTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].x = xTextBox.value;
+    rectangles[selectedRectangleIndex].x = (xTextBox.value - xPositionImage) / currentZoom;
 
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var j = 0; j < rectangles.length; j++) {
-        if(selectedRectangleIndex == j){
+    for(var i = 0; i < rectangles.length; i++) {
+        if(selectedRectangleIndex == i){
             continue;
         }
-        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+        ctxo.strokeRect(
+            rectangles[i].x * currentZoom + xPositionImage, 
+            rectangles[i].y * currentZoom + yPositionImage, 
+            rectangles[i].width * currentZoom, 
+            rectangles[i].height * currentZoom);
     }
 
     ctxo.strokeStyle = "red";
 
     ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x, 
-        rectangles[selectedRectangleIndex].y, 
-        rectangles[selectedRectangleIndex].width, 
-        rectangles[selectedRectangleIndex].height);
+        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
+        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
+        rectangles[selectedRectangleIndex].width * currentZoom, 
+        rectangles[selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
 });
 
 yTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].y = yTextBox.value;
+    rectangles[selectedRectangleIndex].y = (yTextBox.value - yPositionImage) / currentZoom;
 
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var j = 0; j < rectangles.length; j++) {
-        if(selectedRectangleIndex == j){
+    for(var i = 0; i < rectangles.length; i++) {
+        if(selectedRectangleIndex == i){
             continue;
         }
-        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+        ctxo.strokeRect(
+            rectangles[i].x * currentZoom + xPositionImage, 
+            rectangles[i].y * currentZoom + yPositionImage, 
+            rectangles[i].width * currentZoom, 
+            rectangles[i].height * currentZoom);
     }
 
     ctxo.strokeStyle = "red";
 
     ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x, 
-        rectangles[selectedRectangleIndex].y, 
-        rectangles[selectedRectangleIndex].width, 
-        rectangles[selectedRectangleIndex].height);
+        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
+        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
+        rectangles[selectedRectangleIndex].width * currentZoom, 
+        rectangles[selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
 });
 
 widthTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].width = widthTextBox.value;
+    rectangles[selectedRectangleIndex].width = widthTextBox.value / currentZoom;
 
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var j = 0; j < rectangles.length; j++) {
+    for(var i = 0; i < rectangles.length; i++) {
 
-        if(selectedRectangleIndex == j){
+        if(selectedRectangleIndex == i){
             continue;
         }
-        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+        ctxo.strokeRect(
+            rectangles[i].x * currentZoom + xPositionImage, 
+            rectangles[i].y * currentZoom + yPositionImage, 
+            rectangles[i].width * currentZoom, 
+            rectangles[i].height * currentZoom);
     }
 
     ctxo.strokeStyle = "red";
 
     ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x, 
-        rectangles[selectedRectangleIndex].y, 
-        rectangles[selectedRectangleIndex].width, 
-        rectangles[selectedRectangleIndex].height);
+        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
+        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
+        rectangles[selectedRectangleIndex].width * currentZoom, 
+        rectangles[selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
 });
 
 heightTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].height = heightTextBox.value;
+    rectangles[selectedRectangleIndex].height = heightTextBox.value / currentZoom;
 
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var j = 0; j < rectangles.length; j++) {
-        if(selectedRectangleIndex == j){
+    for(var i = 0; i < rectangles.length; i++) {
+        if(selectedRectangleIndex == i){
             continue;
         }
-        ctxo.strokeRect(rectangles[j].x, rectangles[j].y, rectangles[j].width, rectangles[j].height);
+        ctxo.strokeRect(
+            rectangles[i].x * currentZoom + xPositionImage, 
+            rectangles[i].y * currentZoom + yPositionImage, 
+            rectangles[i].width * currentZoom, 
+            rectangles[i].height * currentZoom);
     }
 
     ctxo.strokeStyle = "red";
 
     ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x, 
-        rectangles[selectedRectangleIndex].y, 
-        rectangles[selectedRectangleIndex].width, 
-        rectangles[selectedRectangleIndex].height);
+        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
+        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
+        rectangles[selectedRectangleIndex].width * currentZoom, 
+        rectangles[selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
 });
