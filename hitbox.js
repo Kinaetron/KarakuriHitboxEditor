@@ -11,8 +11,8 @@ var heightTextBox = document.getElementById("height");
 
 
 
-ctx.lineWidth = 3;
-ctxo.lineWidth = 3;
+ctx.lineWidth = 2;
+ctxo.lineWidth = 2;
 // style the context
 ctx.strokeStyle = "blue";
 ctxo.strokeStyle = "blue";
@@ -68,17 +68,8 @@ let rectangles = [];
 let selectedRectangleIndex = -1;
 
 function resizeRectangles() {
-
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-    for(var i = 0; i < rectangles.length; i++) {
-            ctxo.strokeRect(
-                rectangles[i].x * currentZoom + xPositionImage, 
-                rectangles[i].y * currentZoom + yPositionImage, 
-                rectangles[i].width * currentZoom, 
-                rectangles[i].height * currentZoom);
-    }
+    reDrawBoxes();
+    reDrawSelectedBox();
 }
 
 function handleMouseDown(e) {
@@ -135,14 +126,7 @@ function handleMouseUp(e) {
                         rectangles[j].height * currentZoom);
                 }
 
-                ctxo.strokeStyle = "red";
-
-                ctxo.strokeRect(rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
-                                rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
-                                rectangles[selectedRectangleIndex].width * currentZoom, 
-                                rectangles[selectedRectangleIndex].height * currentZoom);
-
-                ctxo.strokeStyle = "blue"
+                reDrawSelectedBox();
                                 
                 xTextBox.value = rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage;
                 yTextBox.value = rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage;
@@ -205,16 +189,7 @@ function IsDrawing()
 
     selectedRectangleIndex = - 1;
 
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-    for(var i = 0; i < rectangles.length; i++) {
-        ctxo.strokeRect(
-            rectangles[i].x * currentZoom + xPositionImage, 
-            rectangles[i].y * currentZoom + yPositionImage, 
-            rectangles[i].width * currentZoom, 
-            rectangles[i].height * currentZoom);
-    }
+    reDrawBoxes();
 
     xTextBox.value = "";
     yTextBox.value = "";
@@ -233,16 +208,7 @@ function Delete() {
         rectangles.splice(selectedRectangleIndex, 1);
         selectedRectangleIndex = - 1;
 
-        ctx.clearRect(0, 0, overlay.width, overlay.height);
-        ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-        for(var i = 0; i < rectangles.length; i++) {
-            ctxo.strokeRect(
-                rectangles[i].x * currentZoom + xPositionImage, 
-                rectangles[i].y * currentZoom + yPositionImage, 
-                rectangles[i].width * currentZoom,
-                rectangles[i].height * currentZoom);
-        }
+        reDrawBoxes();
 
         xTextBox.value = "";
         yTextBox.value = "";
@@ -277,91 +243,33 @@ window.addEventListener("resize", function () {
 xTextBox.addEventListener("input", function() {
     rectangles[selectedRectangleIndex].x = (xTextBox.value - xPositionImage) / currentZoom;
 
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-    for(var i = 0; i < rectangles.length; i++) {
-        if(selectedRectangleIndex == i){
-            continue;
-        }
-        ctxo.strokeRect(
-            rectangles[i].x * currentZoom + xPositionImage, 
-            rectangles[i].y * currentZoom + yPositionImage, 
-            rectangles[i].width * currentZoom, 
-            rectangles[i].height * currentZoom);
-    }
-
-    ctxo.strokeStyle = "red";
-
-    ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
-        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
-        rectangles[selectedRectangleIndex].width * currentZoom, 
-        rectangles[selectedRectangleIndex].height * currentZoom);
-    
-    ctxo.strokeStyle = "blue";
+    reDrawBoxes();
+    reDrawSelectedBox();
 });
 
 yTextBox.addEventListener("input", function() {
     rectangles[selectedRectangleIndex].y = (yTextBox.value - yPositionImage) / currentZoom;
 
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-    for(var i = 0; i < rectangles.length; i++) {
-        if(selectedRectangleIndex == i){
-            continue;
-        }
-        ctxo.strokeRect(
-            rectangles[i].x * currentZoom + xPositionImage, 
-            rectangles[i].y * currentZoom + yPositionImage, 
-            rectangles[i].width * currentZoom, 
-            rectangles[i].height * currentZoom);
-    }
-
-    ctxo.strokeStyle = "red";
-
-    ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
-        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
-        rectangles[selectedRectangleIndex].width * currentZoom, 
-        rectangles[selectedRectangleIndex].height * currentZoom);
-    
-    ctxo.strokeStyle = "blue";
+    reDrawBoxes();
+    reDrawSelectedBox();
 });
 
 widthTextBox.addEventListener("input", function() {
     rectangles[selectedRectangleIndex].width = widthTextBox.value / currentZoom;
 
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctxo.clearRect(0, 0, overlay.width, overlay.height);
-
-    for(var i = 0; i < rectangles.length; i++) {
-
-        if(selectedRectangleIndex == i){
-            continue;
-        }
-        ctxo.strokeRect(
-            rectangles[i].x * currentZoom + xPositionImage, 
-            rectangles[i].y * currentZoom + yPositionImage, 
-            rectangles[i].width * currentZoom, 
-            rectangles[i].height * currentZoom);
-    }
-
-    ctxo.strokeStyle = "red";
-
-    ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
-        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
-        rectangles[selectedRectangleIndex].width * currentZoom, 
-        rectangles[selectedRectangleIndex].height * currentZoom);
-    
-    ctxo.strokeStyle = "blue";
+    reDrawBoxes();
+    reDrawSelectedBox();
 });
 
 heightTextBox.addEventListener("input", function() {
     rectangles[selectedRectangleIndex].height = heightTextBox.value / currentZoom;
 
+    reDrawBoxes();
+    reDrawSelectedBox();
+});
+
+
+function reDrawBoxes() {
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
@@ -375,6 +283,12 @@ heightTextBox.addEventListener("input", function() {
             rectangles[i].width * currentZoom, 
             rectangles[i].height * currentZoom);
     }
+}
+
+function reDrawSelectedBox() {
+    if(selectedRectangleIndex == -1) {
+        return;
+    }
 
     ctxo.strokeStyle = "red";
 
@@ -385,4 +299,4 @@ heightTextBox.addEventListener("input", function() {
         rectangles[selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
-});
+}

@@ -7,8 +7,6 @@ function ZoomOut()
     else {
         currentZoom = currentZoom - 0.25;
         Zoom();
-        xPositionImage = (frameCanvas.width / 2) - (width * currentZoom / 2);
-        yPositionImage = (frameCanvas.height / 2) - (height * currentZoom / 2);
         resizeRectangles();
     }
 }
@@ -21,8 +19,6 @@ function ZoomIn()
     else {
         currentZoom = currentZoom + 0.25;
         Zoom();
-        xPositionImage = (frameCanvas.width / 2) - (width * currentZoom / 2);
-        yPositionImage = (frameCanvas.height / 2) - (height * currentZoom / 2);
         resizeRectangles();
     }
 }
@@ -35,14 +31,15 @@ function DefaultSize()
     else {
         currentZoom = 1;
         Zoom();
-        xPositionImage = (frameCanvas.width / 2) - (width * currentZoom / 2);
-        yPositionImage = (frameCanvas.height / 2) - (height * currentZoom / 2);
         resizeRectangles();
     }
 }
 
 function Zoom()
 {
+    xPositionImage = (frameCanvas.width / 2) - (width * currentZoom / 2);
+    yPositionImage = (frameCanvas.height / 2) - (height * currentZoom / 2);
+
     const img = new Image();
     img.src = sourceImage;
 
