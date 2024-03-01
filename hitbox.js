@@ -95,10 +95,10 @@ function handleMouseUp(e) {
 
         rectangles.push(
             new rectctangle(
-                (prevStartX - xPositionImage) / currentZoom, 
-                (prevStartY - yPositionImage) / currentZoom,
-                prevWidth / currentZoom,
-                prevHeight / currentZoom));
+                Math.round((prevStartX - xPositionImage) / currentZoom), 
+                Math.round((prevStartY - yPositionImage) / currentZoom),
+                Math.round(prevWidth / currentZoom),
+                Math.round(prevHeight / currentZoom)));
 
         ctxo.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
     }
@@ -128,10 +128,10 @@ function handleMouseUp(e) {
 
                 reDrawSelectedBox();
                                 
-                xTextBox.value = rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage;
-                yTextBox.value = rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage;
-                widthTextBox.value = rectangles[selectedRectangleIndex].width * currentZoom;
-                heightTextBox.value = rectangles[selectedRectangleIndex].height * currentZoom;
+                xTextBox.value = Math.round(rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage);
+                yTextBox.value = Math.round(rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage);
+                widthTextBox.value = Math.round(rectangles[selectedRectangleIndex].width * currentZoom);
+                heightTextBox.value = Math.round(rectangles[selectedRectangleIndex].height * currentZoom);
             }
         }
     }
@@ -241,28 +241,28 @@ window.addEventListener("resize", function () {
 });
 
 xTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].x = (xTextBox.value - xPositionImage) / currentZoom;
+    rectangles[selectedRectangleIndex].x = Math.round((xTextBox.value - xPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 yTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].y = (yTextBox.value - yPositionImage) / currentZoom;
+    rectangles[selectedRectangleIndex].y = Math.round((yTextBox.value - yPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 widthTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].width = widthTextBox.value / currentZoom;
+    rectangles[selectedRectangleIndex].width = Math.round(widthTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 heightTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].height = heightTextBox.value / currentZoom;
+    rectangles[selectedRectangleIndex].height = Math.round(heightTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
