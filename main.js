@@ -11,11 +11,11 @@ let frameCount;
 let frameArray = [];
 let frameIndex = 0;
 
-function FrameInformation(width, height, source, frameNumber,) {
+function FrameInformation(width, height, source, frameIndex) {
   this.width = width;
   this.height = height;
   this.source = source;
-  this.frameNumber = frameNumber;
+  this.frameIndex = frameIndex;
 }
 
 function createWindow () {
@@ -75,8 +75,7 @@ async function getAnimationFrames(aseFile)
 
   frameCount = aseFile.numFrames;
 
-  for (let i = 0; i < frameCount; i++) 
-  {
+  for (let i = 0; i < frameCount; i++) {
       // Get the cels for the first frame
       const cels = aseFile.frames[i].cels
       // copy the array
@@ -111,24 +110,23 @@ async function getAnimationFrames(aseFile)
       
       frameArray.push(frameInformation);
   }
+    mainWindow.webContents.send('update-frame-count', frameCount);
     mainWindow.webContents.send('update-frame', frameArray[0]);
 }
 
-function handleDecrementFrame(event)
-{
+function handleDecrementFrame() {
   frameIndex = frameIndex <= 0 ? 0 : frameIndex - 1;
   mainWindow.webContents.send('update-frame', frameArray[frameIndex]);
 }
 
-function handleIncrementFrame(event)
-{
+function handleIncrementFrame() {
   frameIndex = frameIndex >= frameCount - 1 ? frameCount - 1 : frameIndex + 1;
   mainWindow.webContents.send('update-frame', frameArray[frameIndex]);
 }
 
 app.whenReady().then(() => {
   ipcMain.on('frame-value', (_event, value) => {
-  })
+})
 
   ipcMain.on('decrement-frame', handleDecrementFrame);
   ipcMain.on('increment-frame', handleIncrementFrame);

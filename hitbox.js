@@ -9,14 +9,11 @@ var yTextBox = document.getElementById("y");
 var widthTextBox = document.getElementById("width");
 var heightTextBox = document.getElementById("height");
 
-
-
 ctx.lineWidth = 2;
 ctxo.lineWidth = 2;
 // style the context
 ctx.strokeStyle = "blue";
 ctxo.strokeStyle = "blue";
-
 
 function pointRectangleCollide(x, y, rectangle) {
     const left = rectangle.x * currentZoom + xPositionImage;
@@ -30,7 +27,7 @@ function pointRectangleCollide(x, y, rectangle) {
            y <= bottom;
 }
 
-function rectctangle(x, y, width, height) {
+function rectangle(x, y, width, height) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -63,8 +60,6 @@ let prevStartY = 0;
 let prevWidth = 0;
 let prevHeight = 0;
 
-let rectangles = [];
-
 let selectedRectangleIndex = -1;
 
 function resizeRectangles() {
@@ -73,7 +68,6 @@ function resizeRectangles() {
 }
 
 function handleMouseDown(e) {
-
     e.preventDefault();
     e.stopPropagation();
 
@@ -92,9 +86,8 @@ function handleMouseUp(e) {
     isDown = false;
 
     if(isDrawing) {
-
-        rectangles.push(
-            new rectctangle(
+        frameRectangles[frameIndex].push(
+            new rectangle(
                 Math.round((prevStartX - xPositionImage) / currentZoom), 
                 Math.round((prevStartY - yPositionImage) / currentZoom),
                 Math.round(prevWidth / currentZoom),
@@ -103,35 +96,35 @@ function handleMouseUp(e) {
         ctxo.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
     }
     else if(isSelecting) {
-        for(var i = 0; i < rectangles.length; i++) 
+        for(var i = 0; i < frameRectangles[frameIndex].length; i++) 
         {
             if(pointRectangleCollide(
                 startX, 
                 startY, 
-                rectangles[i])) {
+                frameRectangles[frameIndex][i])) {
 
                 selectedRectangleIndex = i;
                 ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-                for(var j = 0; j < rectangles.length; j++) {
+                for(var j = 0; j < frameRectangles[frameIndex].length; j++) {
 
                     if(selectedRectangleIndex == j){
                         continue;
                     }
 
                     ctxo.strokeRect(
-                        rectangles[j].x * currentZoom + xPositionImage, 
-                        rectangles[j].y * currentZoom + yPositionImage, 
-                        rectangles[j].width * currentZoom, 
-                        rectangles[j].height * currentZoom);
+                        frameRectangles[frameIndex][j].x * currentZoom + xPositionImage, 
+                        frameRectangles[frameIndex][j].y * currentZoom + yPositionImage, 
+                        frameRectangles[frameIndex][j].width * currentZoom, 
+                        frameRectangles[frameIndex][j].height * currentZoom);
                 }
 
                 reDrawSelectedBox();
                                 
-                xTextBox.value = Math.round(rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage);
-                yTextBox.value = Math.round(rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage);
-                widthTextBox.value = Math.round(rectangles[selectedRectangleIndex].width * currentZoom);
-                heightTextBox.value = Math.round(rectangles[selectedRectangleIndex].height * currentZoom);
+                xTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].x * currentZoom + xPositionImage);
+                yTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].y * currentZoom + yPositionImage);
+                widthTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].width * currentZoom);
+                heightTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].height * currentZoom);
             }
         }
     }
@@ -205,7 +198,7 @@ function IsSelecting() {
 function Delete() {
     if (isSelecting) 
     {
-        rectangles.splice(selectedRectangleIndex, 1);
+        frameRectangles[frameIndex].splice(selectedRectangleIndex, 1);
         selectedRectangleIndex = - 1;
 
         reDrawBoxes();
@@ -241,28 +234,28 @@ window.addEventListener("resize", function () {
 });
 
 xTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].x = Math.round((xTextBox.value - xPositionImage) / currentZoom);
+    frameRectangles[frameIndex][selectedRectangleIndex].x = Math.round((xTextBox.value - xPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 yTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].y = Math.round((yTextBox.value - yPositionImage) / currentZoom);
+    frameRectangles[frameIndex][selectedRectangleIndex].y = Math.round((yTextBox.value - yPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 widthTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].width = Math.round(widthTextBox.value / currentZoom);
+    frameRectangles[frameIndex][selectedRectangleIndex].width = Math.round(widthTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 heightTextBox.addEventListener("input", function() {
-    rectangles[selectedRectangleIndex].height = Math.round(heightTextBox.value / currentZoom);
+    frameRectangles[frameIndex][selectedRectangleIndex].height = Math.round(heightTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
@@ -273,15 +266,16 @@ function reDrawBoxes() {
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var i = 0; i < rectangles.length; i++) {
+    for(var i = 0; i < frameRectangles[frameIndex].length; i++) {
         if(selectedRectangleIndex == i){
             continue;
         }
+        
         ctxo.strokeRect(
-            rectangles[i].x * currentZoom + xPositionImage, 
-            rectangles[i].y * currentZoom + yPositionImage, 
-            rectangles[i].width * currentZoom, 
-            rectangles[i].height * currentZoom);
+            frameRectangles[frameIndex][i].x * currentZoom + xPositionImage, 
+            frameRectangles[frameIndex][i].y * currentZoom + yPositionImage, 
+            frameRectangles[frameIndex][i].width * currentZoom, 
+            frameRectangles[frameIndex][i].height * currentZoom);
     }
 }
 
@@ -293,10 +287,10 @@ function reDrawSelectedBox() {
     ctxo.strokeStyle = "red";
 
     ctxo.strokeRect(
-        rectangles[selectedRectangleIndex].x * currentZoom + xPositionImage, 
-        rectangles[selectedRectangleIndex].y * currentZoom + yPositionImage, 
-        rectangles[selectedRectangleIndex].width * currentZoom, 
-        rectangles[selectedRectangleIndex].height * currentZoom);
+        frameRectangles[frameIndex][selectedRectangleIndex].x * currentZoom + xPositionImage, 
+        frameRectangles[frameIndex][selectedRectangleIndex].y * currentZoom + yPositionImage, 
+        frameRectangles[frameIndex][selectedRectangleIndex].width * currentZoom, 
+        frameRectangles[frameIndex][selectedRectangleIndex].height * currentZoom);
     
     ctxo.strokeStyle = "blue";
 }
