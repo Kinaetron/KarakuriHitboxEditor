@@ -54,6 +54,10 @@ window.karakuriAPI.onUpdateFrameCount((value) => {
       } 
 });
 
+window.karakuriAPI.onSendBoxes(() => {
+    window.karakuriAPI.saveBoxes(frameRectangles);
+});
+
 decrementButton.addEventListener('click', () => {
     window.karakuriAPI.decrementFrame();
 });

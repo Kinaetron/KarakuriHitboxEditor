@@ -11,6 +11,8 @@ let frameCount;
 let frameArray = [];
 let frameIndex = 0;
 
+let filepath;
+
 function FrameInformation(width, height, source, frameIndex) {
   this.width = width;
   this.height = height;
@@ -31,8 +33,7 @@ function createWindow () {
     label: 'File',
     submenu: [{
         label: 'Create',
-        click: ()=> 
-        {
+        click: ()=> {
           const animationFile = dialog.showOpenDialogSync({
             properties: ['openFile'],
             filters:[
@@ -43,15 +44,28 @@ function createWindow () {
 
           if(animationFile && animationFile.length > 0) 
           {
-            const selectedFilePath = animationFile[0];
-            const filename = path.basename(selectedFilePath);
-            const buffer = fs.readFileSync(selectedFilePath);
+            filepath = animationFile[0];
+            const filename = path.basename(filepath);
+            const buffer = fs.readFileSync(filepath);
             const aseFile = new Aseprite(buffer, filename);
 
             getAnimationFrames(aseFile);
           }
         }
-      }]
+      },
+      {
+        label: 'Open',
+        click: ()=> {
+          console.log('open a file nerd');
+        }
+      },
+      {
+        label: 'Save',
+        click: ()=> {
+          mainWindow.webContents.send('send-boxes');
+        }
+      }
+    ]
     }]
 
   menu = Menu.buildFromTemplate(template);
@@ -124,10 +138,35 @@ function handleIncrementFrame() {
   mainWindow.webContents.send('update-frame', frameArray[frameIndex]);
 }
 
+function handleSaveBoxes(_event, value) {
+
+   const saveFilePath = dialog.showSaveDialogSync({
+    title: 'Save collider information',
+    defaultPath: path.join(app.getPath('documents'), 'data.json'),
+    filters: [{ name: 'JSON Files', extensions: ['json'] }]
+   });
+
+   if(saveFilePath) {
+    const saveData = {
+      animationFilePath: filepath,
+      colliderBoxes: value
+    };
+
+    fs.writeFile(saveFilePath, JSON.stringify(saveData), (err) => {
+      if (err) {
+        console.error('Error writing JSON file:', err);
+      } else {
+        console.log('JSON file saved successfully:', saveFilePath);
+      }
+    });
+   }
+}
+
 app.whenReady().then(() => {
   ipcMain.on('frame-value', (_event, value) => {
 })
 
+  ipcMain.on('save-boxes', handleSaveBoxes);
   ipcMain.on('decrement-frame', handleDecrementFrame);
   ipcMain.on('increment-frame', handleIncrementFrame);
 
