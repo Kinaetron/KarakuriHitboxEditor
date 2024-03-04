@@ -47,7 +47,9 @@ function createWindow () {
             animationFilepath = animationFile[0];
             openAnimationFile();
 
-            mainWindow.webContents.send('open-boxes', null);
+            mainWindow.webContents.send('open-boxes', {
+              frameCount: frameCount,
+            });
           }
         }
       },
@@ -68,8 +70,11 @@ function createWindow () {
 
             animationFilepath = jsonBoxData.animationFilePath;
             openAnimationFile();
-
-            mainWindow.webContents.send('open-boxes', jsonBoxData.boxes);
+            
+            mainWindow.webContents.send('open-boxes', {
+              boxes: jsonBoxData.boxes,
+              frameCount: frameCount,
+            });
           }
         }
       },
@@ -142,7 +147,6 @@ async function openAnimationFile()
       
       frameArray.push(frameInformation);
   }
-    mainWindow.webContents.send('update-frame-count', frameCount);
     mainWindow.webContents.send('update-frame', frameArray[0]);
 }
 
