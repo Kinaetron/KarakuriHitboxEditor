@@ -48,10 +48,18 @@ window.karakuriAPI.onUpdateFrame((value) =>
 
 window.karakuriAPI.onUpdateFrameCount((value) => {
     frameCount = value;
+});
 
-    for (let i = 0; i < frameCount; i++) {
-        frameRectangles.push([]);
-      } 
+window.karakuriAPI.onOpenBoxes((value) => {
+    if(value) {
+        frameRectangles = value;
+        reDrawBoxes();
+    }
+    else {
+        for (let i = 0; i < frameCount; i++) {
+            frameRectangles.push([]);
+          } 
+    }
 });
 
 window.karakuriAPI.onSendBoxes(() => {

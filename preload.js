@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('karakuriAPI',
   onSendBoxes: (callback) => ipcRenderer.on('send-boxes', (_event) => callback()),
   onUpdateFrame: (callback) => ipcRenderer.on('update-frame', (_event, value) => callback(value)),
   onUpdateFrameCount: (callback) => ipcRenderer.on('update-frame-count', (_event, value) => callback(value)),
+  onOpenBoxes: (callback) => ipcRenderer.on('open-boxes', (_event, value) => callback(value))
 })

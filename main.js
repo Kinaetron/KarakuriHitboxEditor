@@ -11,7 +11,7 @@ let frameCount;
 let frameArray = [];
 let frameIndex = 0;
 
-let filepath;
+let animationFilepath;
 
 function FrameInformation(width, height, source, frameIndex) {
   this.width = width;
@@ -37,26 +37,40 @@ function createWindow () {
           const animationFile = dialog.showOpenDialogSync({
             properties: ['openFile'],
             filters:[
-              { name: 'Aseprite', extensions:['ase', 'aseprite'] }
+              { name: 'Aseprite Files', extensions:['ase', 'aseprite'] }
             ],
             multiSelection: false
-          })
+          });
 
           if(animationFile && animationFile.length > 0) 
           {
-            filepath = animationFile[0];
-            const filename = path.basename(filepath);
-            const buffer = fs.readFileSync(filepath);
-            const aseFile = new Aseprite(buffer, filename);
+            animationFilepath = animationFile[0];
+            openAnimationFile();
 
-            getAnimationFrames(aseFile);
+            mainWindow.webContents.send('open-boxes', null);
           }
         }
       },
       {
         label: 'Open',
         click: ()=> {
-          console.log('open a file nerd');
+          const boxFile = dialog.showOpenDialogSync({
+            properties: ['openFile'],
+            filters:[
+              { name: 'JSON Files', extensions:['json'] }
+            ],
+            multiSelection: false
+          });
+
+          if(boxFile && boxFile.length > 0) {
+            const boxData = fs.readFileSync(boxFile[0], 'utf8');
+            const jsonBoxData = JSON.parse(boxData);
+
+            animationFilepath = jsonBoxData.animationFilePath;
+            openAnimationFile();
+
+            mainWindow.webContents.send('open-boxes', jsonBoxData.boxes);
+          }
         }
       },
       {
@@ -75,8 +89,12 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
 }
 
-async function getAnimationFrames(aseFile)
+async function openAnimationFile()
 {
+  const filename = path.basename(animationFilepath);
+  const buffer = fs.readFileSync(animationFilepath);
+  const aseFile = new Aseprite(buffer, filename);
+
   aseFile.parse();
 
   // Create a blank png image buffer that's the same size as the Aseprite sprite (only make the promise because we'll use Promise.all a little later)
@@ -141,15 +159,15 @@ function handleIncrementFrame() {
 function handleSaveBoxes(_event, value) {
 
    const saveFilePath = dialog.showSaveDialogSync({
-    title: 'Save collider information',
+    title: 'Save box information',
     defaultPath: path.join(app.getPath('documents'), 'data.json'),
     filters: [{ name: 'JSON Files', extensions: ['json'] }]
    });
 
    if(saveFilePath) {
     const saveData = {
-      animationFilePath: filepath,
-      colliderBoxes: value
+      animationFilePath: animationFilepath,
+      boxes: value
     };
 
     fs.writeFile(saveFilePath, JSON.stringify(saveData), (err) => {

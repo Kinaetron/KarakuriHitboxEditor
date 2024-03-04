@@ -96,6 +96,10 @@ function handleMouseUp(e) {
         ctxo.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
     }
     else if(isSelecting) {
+        if(!frameRectangles) {
+            return;
+        }
+
         for(var i = 0; i < frameRectangles[frameIndex].length; i++) 
         {
             if(pointRectangleCollide(
