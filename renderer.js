@@ -18,7 +18,7 @@ let yPositionImage = 0;
 let frameCount = 0;
 let frameIndex = -1;
 
-let frameRectangles = [];
+let frameBoxes = [];
 
 window.karakuriAPI.onUpdateFrame((value) => 
 {
@@ -49,21 +49,19 @@ window.karakuriAPI.onUpdateFrame((value) =>
 window.karakuriAPI.onOpenBoxes((value) => {
     frameCount = value.frameCount;
 
-    console.log(frameCount);
-
     if(value.boxes) {
-        frameRectangles = value.boxes;
+        frameBoxes = value.boxes;
         reDrawBoxes();
     }
     else {
         for (let i = 0; i < frameCount; i++) {
-            frameRectangles.push([]);
+            frameBoxes.push([]);
         } 
     }
 });
 
 window.karakuriAPI.onSendBoxes(() => {
-    window.karakuriAPI.saveBoxes(frameRectangles);
+    window.karakuriAPI.saveBoxes(frameBoxes);
 });
 
 decrementButton.addEventListener('click', () => {

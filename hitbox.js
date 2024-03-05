@@ -1,3 +1,4 @@
+
 // get references to the canvas and context
 var canvas = document.getElementById("canvas");
 var overlay = document.getElementById("overlay");
@@ -11,15 +12,28 @@ var heightTextBox = document.getElementById("height");
 
 ctx.lineWidth = 2;
 ctxo.lineWidth = 2;
-// style the context
-ctx.strokeStyle = "blue";
-ctxo.strokeStyle = "blue";
 
-function pointRectangleCollide(x, y, rectangle) {
-    const left = rectangle.x * currentZoom + xPositionImage;
-    const right = (left + (rectangle.width * currentZoom));
-    const top = rectangle.y * currentZoom + yPositionImage;
-    const bottom = (top + (rectangle.height * currentZoom));
+const hitboxType = "hitbox";
+const hurtboxType = "hurtbox";
+const colliderType = "colliderbox";
+
+const hitboxColour = "blue";
+const hurtboxColour = "red";
+const colliderboxColour  = "green";
+const selectedboxColour = "yellow";
+
+// style the context
+ctx.strokeStyle = hitboxColour;
+ctxo.strokeStyle = hitboxColour;
+
+let currentType = hitboxType;
+let currentColour = hitboxColour;
+
+function pointBoxCollide(x, y, box) {
+    const left = box.x * currentZoom + xPositionImage;
+    const right = (left + (box.width * currentZoom));
+    const top = box.y * currentZoom + yPositionImage;
+    const bottom = (top + (box.height * currentZoom));
 
     return x >= left &&
            x <= right &&
@@ -27,11 +41,12 @@ function pointRectangleCollide(x, y, rectangle) {
            y <= bottom;
 }
 
-function rectangle(x, y, width, height) {
+function box(x, y, width, height, boxType) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.boxType = boxType;
 }
 
 // calculate where the canvas is on the window
@@ -60,7 +75,7 @@ let prevStartY = 0;
 let prevWidth = 0;
 let prevHeight = 0;
 
-let selectedRectangleIndex = -1;
+let selectedBoxIndex = -1;
 
 function resizeRectangles() {
     reDrawBoxes();
@@ -86,49 +101,50 @@ function handleMouseUp(e) {
     isDown = false;
 
     if(isDrawing) {
-        frameRectangles[frameIndex].push(
-            new rectangle(
+        frameBoxes[frameIndex].push(
+            new box(
                 Math.round((prevStartX - xPositionImage) / currentZoom), 
                 Math.round((prevStartY - yPositionImage) / currentZoom),
                 Math.round(prevWidth / currentZoom),
-                Math.round(prevHeight / currentZoom)));
+                Math.round(prevHeight / currentZoom),
+                currentType));
 
         ctxo.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
     }
     else if(isSelecting) {
-        if(!frameRectangles) {
+        if(!frameBoxes) {
             return;
         }
 
-        for(var i = 0; i < frameRectangles[frameIndex].length; i++) 
+        for(var i = 0; i < frameBoxes[frameIndex].length; i++) 
         {
-            if(pointRectangleCollide(
+            if(pointBoxCollide(
                 startX, 
                 startY, 
-                frameRectangles[frameIndex][i])) {
+                frameBoxes[frameIndex][i])) {
 
-                selectedRectangleIndex = i;
+                selectedBoxIndex = i;
                 ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-                for(var j = 0; j < frameRectangles[frameIndex].length; j++) {
+                for(var j = 0; j < frameBoxes[frameIndex].length; j++) {
 
-                    if(selectedRectangleIndex == j){
+                    if(selectedBoxIndex == j){
                         continue;
                     }
 
                     ctxo.strokeRect(
-                        frameRectangles[frameIndex][j].x * currentZoom + xPositionImage, 
-                        frameRectangles[frameIndex][j].y * currentZoom + yPositionImage, 
-                        frameRectangles[frameIndex][j].width * currentZoom, 
-                        frameRectangles[frameIndex][j].height * currentZoom);
+                        frameBoxes[frameIndex][j].x * currentZoom + xPositionImage, 
+                        frameBoxes[frameIndex][j].y * currentZoom + yPositionImage, 
+                        frameBoxes[frameIndex][j].width * currentZoom, 
+                        frameBoxes[frameIndex][j].height * currentZoom);
                 }
-
+                
                 reDrawSelectedBox();
-                                
-                xTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].x * currentZoom + xPositionImage);
-                yTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].y * currentZoom + yPositionImage);
-                widthTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].width * currentZoom);
-                heightTextBox.value = Math.round(frameRectangles[frameIndex][selectedRectangleIndex].height * currentZoom);
+
+                xTextBox.value = Math.round(frameBoxes[frameIndex][selectedBoxIndex].x * currentZoom + xPositionImage);
+                yTextBox.value = Math.round(frameBoxes[frameIndex][selectedBoxIndex].y * currentZoom + yPositionImage);
+                widthTextBox.value = Math.round(frameBoxes[frameIndex][selectedBoxIndex].width * currentZoom);
+                heightTextBox.value = Math.round(frameBoxes[frameIndex][selectedBoxIndex].height * currentZoom);
             }
         }
     }
@@ -202,8 +218,8 @@ function IsSelecting() {
 function Delete() {
     if (isSelecting) 
     {
-        frameRectangles[frameIndex].splice(selectedRectangleIndex, 1);
-        selectedRectangleIndex = - 1;
+        frameBoxes[frameIndex].splice(selectedBoxIndex, 1);
+        selectedBoxIndex = - 1;
 
         reDrawBoxes();
 
@@ -238,28 +254,28 @@ window.addEventListener("resize", function () {
 });
 
 xTextBox.addEventListener("input", function() {
-    frameRectangles[frameIndex][selectedRectangleIndex].x = Math.round((xTextBox.value - xPositionImage) / currentZoom);
+    frameBoxes[frameIndex][selectedBoxIndex].x = Math.round((xTextBox.value - xPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 yTextBox.addEventListener("input", function() {
-    frameRectangles[frameIndex][selectedRectangleIndex].y = Math.round((yTextBox.value - yPositionImage) / currentZoom);
+    frameBoxes[frameIndex][selectedBoxIndex].y = Math.round((yTextBox.value - yPositionImage) / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 widthTextBox.addEventListener("input", function() {
-    frameRectangles[frameIndex][selectedRectangleIndex].width = Math.round(widthTextBox.value / currentZoom);
+    frameBoxes[frameIndex][selectedBoxIndex].width = Math.round(widthTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
 });
 
 heightTextBox.addEventListener("input", function() {
-    frameRectangles[frameIndex][selectedRectangleIndex].height = Math.round(heightTextBox.value / currentZoom);
+    frameBoxes[frameIndex][selectedBoxIndex].height = Math.round(heightTextBox.value / currentZoom);
 
     reDrawBoxes();
     reDrawSelectedBox();
@@ -270,31 +286,67 @@ function reDrawBoxes() {
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctxo.clearRect(0, 0, overlay.width, overlay.height);
 
-    for(var i = 0; i < frameRectangles[frameIndex].length; i++) {
-        if(selectedRectangleIndex == i){
+    for(var i = 0; i < frameBoxes[frameIndex].length; i++) {
+        if(selectedBoxIndex == i){
             continue;
+        }
+
+        if(frameBoxes[frameIndex][i].boxType === hitboxType) {
+            ctx.strokeStyle  = hitboxColour;
+            ctxo.strokeStyle = hitboxColour;
+        }
+        else if(frameBoxes[frameIndex][i].boxType === hurtboxType) {
+            ctx.strokeStyle  = hurtboxColour;
+            ctxo.strokeStyle = hurtboxColour;
+        }
+        else if(frameBoxes[frameIndex][i].boxType === colliderType) {
+            ctx.strokeStyle  = colliderboxColour;
+            ctxo.strokeStyle = colliderboxColour;
         }
         
         ctxo.strokeRect(
-            frameRectangles[frameIndex][i].x * currentZoom + xPositionImage, 
-            frameRectangles[frameIndex][i].y * currentZoom + yPositionImage, 
-            frameRectangles[frameIndex][i].width * currentZoom, 
-            frameRectangles[frameIndex][i].height * currentZoom);
+            frameBoxes[frameIndex][i].x * currentZoom + xPositionImage, 
+            frameBoxes[frameIndex][i].y * currentZoom + yPositionImage, 
+            frameBoxes[frameIndex][i].width * currentZoom, 
+            frameBoxes[frameIndex][i].height * currentZoom);
     }
+
+    ctx.strokeStyle  = currentColour;
+    ctxo.strokeStyle = currentColour;
+
 }
 
 function reDrawSelectedBox() {
-    if(selectedRectangleIndex == -1) {
+    if(selectedBoxIndex == -1) {
         return;
     }
 
-    ctxo.strokeStyle = "red";
+    currentColour = ctxo.strokeStyle;
+    ctxo.strokeStyle = selectedboxColour;
 
     ctxo.strokeRect(
-        frameRectangles[frameIndex][selectedRectangleIndex].x * currentZoom + xPositionImage, 
-        frameRectangles[frameIndex][selectedRectangleIndex].y * currentZoom + yPositionImage, 
-        frameRectangles[frameIndex][selectedRectangleIndex].width * currentZoom, 
-        frameRectangles[frameIndex][selectedRectangleIndex].height * currentZoom);
+        frameBoxes[frameIndex][selectedBoxIndex].x * currentZoom + xPositionImage, 
+        frameBoxes[frameIndex][selectedBoxIndex].y * currentZoom + yPositionImage, 
+        frameBoxes[frameIndex][selectedBoxIndex].width * currentZoom, 
+        frameBoxes[frameIndex][selectedBoxIndex].height * currentZoom);
     
-    ctxo.strokeStyle = "blue";
+    ctxo.strokeStyle = currentColour;
+}
+
+function HitboxSelect() {
+    currentType = hitboxType;
+    ctx.strokeStyle = hitboxColour;
+    ctxo.strokeStyle = hitboxColour;
+}
+
+function HurtboxSelect() {
+    currentType = hurtboxType;
+    ctx.strokeStyle = hurtboxColour;
+    ctxo.strokeStyle = hurtboxColour;
+}
+
+function ColliderboxSelect() {
+    currentType = colliderType;
+    ctx.strokeStyle = colliderboxColour;
+    ctxo.strokeStyle = colliderboxColour;
 }
