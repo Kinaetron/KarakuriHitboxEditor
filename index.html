@@ -7,13 +7,20 @@
   </head>
   <body>
     <div id="top">
-      <button onclick="IsDrawing()">Draw Box</button>
-      <button onclick="IsSelecting()" >Select Box</button>
-      <button onclick="Delete()" >Delete Box</button>
+      <label for="boxMode">Box Mode:</label>
+      <select id="boxMode" onchange="boxModeSelection()">
+        <option value="drawingMode" selected>Draw Box</option>
+        <option value="selectMode">Select Box</option>
+      </select>
 
-      <button onclick="HitboxSelect()">Hitbox</button>
-      <button onclick="HurtboxSelect()">Hurtbox</button>
-      <button onclick="ColliderboxSelect()">Colliderbox</button>
+      <label for="boxType">Box Type:</label>
+      <select id="boxType" onchange="boxTypeSelection()">
+        <option value="hitbox" selected>Hitbox</option>
+        <option value="hurtbox">Hurtbox</option>
+        <option value="colliderbox">Colliderbox</option>
+      </select>
+
+      <button onclick="Delete()">Delete Box</button>
 
       <label for="x">X:</label>
       <input type="text" id="x" name="x">

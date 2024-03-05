@@ -59,8 +59,8 @@ function calculateCanvasOffset() {
 // initial calculation
 calculateCanvasOffset();
 
-let isDrawing = false;
-let isSelecting = true;
+let isDrawing = true;
+let isSelecting = false;
 
 // this flag is true when the user is dragging the mouse
 let isDown = false;
@@ -195,24 +195,47 @@ function handleMouseMove(e) {
     }
 }
 
-function IsDrawing() 
-{
-    isDrawing = true;
-    isSelecting = false;
+function boxModeSelection() {
+    var selectedValue = document.getElementById("boxMode").value;
 
-    selectedRectangleIndex = - 1;
-
-    reDrawBoxes();
-
-    xTextBox.value = "";
-    yTextBox.value = "";
-    widthTextBox.value = "";
-    heightTextBox.value = "";
+    if (selectedValue === "drawingMode") {
+        isDrawing = true;
+        isSelecting = false;
+    
+        selectedRectangleIndex = - 1;
+    
+        reDrawBoxes();
+    
+        xTextBox.value = "";
+        yTextBox.value = "";
+        widthTextBox.value = "";
+        heightTextBox.value = "";
+    }
+    else if (selectedValue == "selectMode") {
+        isSelecting = true;
+        isDrawing = false;
+    }
 }
 
-function IsSelecting() {
-    isSelecting = true;
-    isDrawing = false;
+function boxTypeSelection() {
+    var selectedValue = document.getElementById("boxType").value;
+
+    if(selectedValue === "hitbox") {
+        currentType = hitboxType;
+        ctx.strokeStyle = hitboxColour;
+        ctxo.strokeStyle = hitboxColour;
+    }
+    else if (selectedValue === "hurtbox") {
+        currentType = hurtboxType;
+        ctx.strokeStyle = hurtboxColour;
+        ctxo.strokeStyle = hurtboxColour;
+    }
+    else if (selectedValue === "colliderbox") {
+        currentType = colliderType;
+        ctx.strokeStyle = colliderboxColour;
+        ctxo.strokeStyle = colliderboxColour;
+    }
+
 }
 
 function Delete() {
@@ -331,22 +354,4 @@ function reDrawSelectedBox() {
         frameBoxes[frameIndex][selectedBoxIndex].height * currentZoom);
     
     ctxo.strokeStyle = currentColour;
-}
-
-function HitboxSelect() {
-    currentType = hitboxType;
-    ctx.strokeStyle = hitboxColour;
-    ctxo.strokeStyle = hitboxColour;
-}
-
-function HurtboxSelect() {
-    currentType = hurtboxType;
-    ctx.strokeStyle = hurtboxColour;
-    ctxo.strokeStyle = hurtboxColour;
-}
-
-function ColliderboxSelect() {
-    currentType = colliderType;
-    ctx.strokeStyle = colliderboxColour;
-    ctxo.strokeStyle = colliderboxColour;
 }
