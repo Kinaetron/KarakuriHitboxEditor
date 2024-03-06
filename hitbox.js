@@ -132,11 +132,26 @@ function handleMouseUp(e) {
                         continue;
                     }
 
+                    currentColour = ctxo.strokeStyle;
+                    const boxType = frameBoxes[frameIndex][j].boxType;
+
+                    if(boxType === hitboxType) {
+                        ctxo.strokeStyle = hitboxColour;
+                    }
+                    else if(boxType === hurtboxType) {
+                        ctxo.strokeStyle = hurtboxColour;
+                    }
+                    else if(boxType === colliderType) {
+                        ctxo.strokeStyle = colliderboxColour;
+                    }
+
                     ctxo.strokeRect(
                         frameBoxes[frameIndex][j].x * currentZoom + xPositionImage, 
                         frameBoxes[frameIndex][j].y * currentZoom + yPositionImage, 
                         frameBoxes[frameIndex][j].width * currentZoom, 
                         frameBoxes[frameIndex][j].height * currentZoom);
+
+                    ctxo.strokeStyle = currentColour;
                 }
                 
                 reDrawSelectedBox();
@@ -304,6 +319,9 @@ heightTextBox.addEventListener("input", function() {
     reDrawSelectedBox();
 });
 
+function resetSelected() {
+    selectedBoxIndex = -1;
+}
 
 function reDrawBoxes() {
     ctx.clearRect(0, 0, overlay.width, overlay.height);

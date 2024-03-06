@@ -43,6 +43,7 @@ window.karakuriAPI.onUpdateFrame((value) =>
     image.src = sourceImage;
 
     Zoom();
+    resetSelected();
     reDrawBoxes();
 });
 
