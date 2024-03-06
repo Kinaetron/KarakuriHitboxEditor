@@ -23,14 +23,14 @@
       <button onclick="Delete()">Delete Box</button>
 
       <label for="x">X:</label>
-      <input type="text" id="x" name="x">
+      <input type="text" id="x" name="x" pattern="[0-9]{3}" maxlength="3">
       <label for="y">Y:</label>
-      <input type="text" id="y" name="y">
+      <input type="text" id="y" name="y" pattern="[0-9]{3}" maxlength="3">
 
       <label for="width">Width:</label>
-      <input type="text" id="width" name="width">
+      <input type="text" id="width" name="width" pattern="[0-9]{3}" maxlength="3">
       <label for="height">Height:</label>
-      <input type="text" id="height" name="height">
+      <input type="text" id="height" name="height" pattern="[0-9]{3}" maxlength="3">
     </div>
     <div id="middle">
       <canvas id="frameImage" width=800 height=700>Frame Image</canvas>

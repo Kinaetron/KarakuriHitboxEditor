@@ -25,3 +25,10 @@ canvas{
     border: 1px solid red;
     position: absolute;
 }
+
+input {
+    width: 40px;
+    padding: 1px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
