@@ -68,7 +68,9 @@ function createWindow () {
             const boxData = fs.readFileSync(boxFile[0], 'utf8');
             const jsonBoxData = JSON.parse(boxData);
 
-            animationFilepath = jsonBoxData.animationFilePath;
+
+            console.log(path.join(boxFile[0], jsonBoxData.animationFilePath));
+            animationFilepath = path.join(boxFile[0], jsonBoxData.animationFilePath);
             openAnimationFile();
             
             mainWindow.webContents.send('open-boxes', {
@@ -169,8 +171,9 @@ function handleSaveBoxes(_event, value) {
    });
 
    if(saveFilePath) {
+
     const saveData = {
-      animationFilePath: animationFilepath,
+      animationFilePath: path.relative(saveFilePath, animationFilepath),
       boxes: value
     };
 
